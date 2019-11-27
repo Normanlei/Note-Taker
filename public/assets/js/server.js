@@ -51,7 +51,10 @@ app.post("/api/notes", function (req, res) {
             console.log("new note was writed to db.json");
         })
     });
+    res.json(newNote);
 });
+
+
 
 
 
