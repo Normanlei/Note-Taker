@@ -29,19 +29,27 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "../../notes.html"));
 });
 
-app.get("/api/notes",function(req, res){
-    readFileAsync(path.join(__dirname, "../../../db/db.json"),"utf8")
-    .then(function(data){
-        console.log(JSON.parse(data));
-        return res.json(JSON.parse(data));
-    });
+app.get("/api/notes", function (req, res) {
+    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+        .then(function (data) {
+            console.log(JSON.parse(data));
+            return res.json(JSON.parse(data));
+        });
 });
 
-app.post("/api/notes",function(req, res){
+app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-    appendfileAsync(path.join(__dirname, "../../../db/db.json"),newNote)
-    .then(function(){
-        console.log(`${newNote} was added to database!`);
+    console.log(newNote);
+    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+    .then(function(data){
+        notesList = JSON.parse(data);
+        console.log(notesList);
+        notesList.push(newNote);
+        console.log(notesList);
+        writefileAsync(path.join(__dirname, "../../../db/db.json"),JSON.stringify(notesList))
+        .then(function(){
+            console.log("new note was writed to db.json");
+        })
     });
 });
 
@@ -55,4 +63,4 @@ app.post("/api/notes",function(req, res){
 // =============================================================
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
-  });
+});
