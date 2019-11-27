@@ -23,12 +23,11 @@ let notesList;    // use for pull data from db.json
 // Routes
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
-    // res.sendFile(path.join(__dirname, "../../index.html"));
-    res.sendFile("./index.html");
-
+    res.sendFile(path.join(__dirname, "../../index.html"));
+    // res.sendFile("./index.html");
 });
 app.get("/notes", function (req, res) {
-    res.sendFile("./notes.html");
+    res.sendFile(path.join(__dirname, "../../notes.html"));
 });
 
 app.get("/api/notes", function (req, res) {
@@ -43,20 +42,33 @@ app.post("/api/notes", function (req, res) {
     var newNote = req.body;
     console.log(newNote);
     readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
-    .then(function(data){
-        notesList = JSON.parse(data);
-        console.log(notesList);
-        notesList.push(newNote);
-        console.log(notesList);
-        writefileAsync(path.join(__dirname, "../../../db/db.json"),JSON.stringify(notesList))
-        .then(function(){
-            console.log("new note was writed to db.json");
-        })
-    });
+        .then(function (data) {
+            notesList = JSON.parse(data);
+            console.log(notesList);
+            notesList.push(newNote);
+            console.log(notesList);
+            writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
+                .then(function () {
+                    console.log("new note was writed to db.json");
+                })
+        });
     res.json(newNote);
 });
 
-
+app.delete("/api/notes/:id", function (req, res) {
+    var id = req.params.id;
+    console.log(id);
+    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+        .then(function (data) {
+            notesList = JSON.parse(data);
+            notesList.splice(id, 1);
+            writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
+                .then(function () {
+                    console.log("note was deleted from db.json");
+                })
+        });
+    res.json(id);
+});
 
 
 
