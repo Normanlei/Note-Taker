@@ -12,7 +12,6 @@ var PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../../")));
-console.log(path.join(__dirname, "../../"));
 // =============================================================
 //Global Variables
 let writefileAsync = util.promisify(fs.writeFile);
@@ -24,7 +23,6 @@ let notesList;    // use for pull data from db.json
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "../../index.html"));
-    // res.sendFile("./index.html");
 });
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "../../notes.html"));
@@ -33,20 +31,22 @@ app.get("/notes", function (req, res) {
 app.get("/api/notes", function (req, res) {
     readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
         .then(function (data) {
-            console.log(JSON.parse(data));
             return res.json(JSON.parse(data));
         });
 });
 
 app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-    console.log(newNote);
     readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
         .then(function (data) {
             notesList = JSON.parse(data);
-            console.log(notesList);
-            notesList.push(newNote);
-            console.log(notesList);
+            if (newNote.id || newNote.id===0) {
+                let currNote = notesList[newNote.id];
+                currNote.title = newNote.title;
+                currNote.text = newNote.text;
+            } else {
+                notesList.push(newNote);
+            }
             writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
                 .then(function () {
                     console.log("new note was writed to db.json");
@@ -57,7 +57,6 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
     var id = req.params.id;
-    console.log(id);
     readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
         .then(function (data) {
             notesList = JSON.parse(data);
@@ -69,12 +68,6 @@ app.delete("/api/notes/:id", function (req, res) {
         });
     res.json(id);
 });
-
-
-
-
-
-
 
 // Starts the server to begin listening
 // =============================================================

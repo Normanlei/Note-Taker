@@ -4,9 +4,11 @@ html, body {
   padding: 0;
 }
 
-.save-note {
+.save-note,
+.edit-note {
   display: none;
 }
+
 
 .icons i {
   margin-left: 15px;
