@@ -36,7 +36,7 @@ var deleteNote = function (id) {
 // If there is an activeNote, display it, otherwise render empty inputs
 var renderActiveNote = function () {
   $saveNoteBtn.hide();
-  if (activeNote.id || activeNote.id===0) {
+  if (activeNote.id || activeNote.id===0) { 
     $editNoteBtn.show();
     $noteTitle.attr("readonly", true);
     $noteText.attr("readonly", true);
@@ -59,15 +59,15 @@ var handleNoteEdit = function () {
 
 // Get the note data from the inputs, save it to the db and update the view
 var handleNoteSave = function () {
-  if (activeNote.id || activeNote.id===0) {
+  if (activeNote.id || activeNote.id===0) { //updating current note
     activeNote.title = $noteTitle.val();
     activeNote.text = $noteText.val();
     saveNote(activeNote).then(function(data){
       activeNote={};
       getAndRenderNotes();
       renderActiveNote();
-    });
-  } else {
+    }); 
+  } else {   //create a new note object
     var newNote = {
       title: $noteTitle.val(),
       text: $noteText.val()

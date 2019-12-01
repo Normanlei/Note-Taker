@@ -40,11 +40,11 @@ app.post("/api/notes", function (req, res) {
     readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
         .then(function (data) {
             notesList = JSON.parse(data);
-            if (newNote.id || newNote.id===0) {
+            if (newNote.id || newNote.id===0) {   // update the existing data
                 let currNote = notesList[newNote.id];
                 currNote.title = newNote.title;
                 currNote.text = newNote.text;
-            } else {
+            } else {  // add the new data
                 notesList.push(newNote);
             }
             writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
