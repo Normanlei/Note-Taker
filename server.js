@@ -11,7 +11,7 @@ var PORT = process.env.PORT || 3000;
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../../")));
+app.use(express.static(path.join(__dirname, "./public")));
 // =============================================================
 //Global Variables
 let writefileAsync = util.promisify(fs.writeFile);
@@ -22,14 +22,14 @@ let notesList;    // use for pull data from db.json
 // Routes
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "../../index.html"));
+    res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "../../notes.html"));
+    res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
 app.get("/api/notes", function (req, res) {
-    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+    readFileAsync(path.join(__dirname, "./db/db.json"), "utf8")
         .then(function (data) {
             return res.json(JSON.parse(data));
         });
@@ -37,7 +37,7 @@ app.get("/api/notes", function (req, res) {
 
 app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+    readFileAsync(path.join(__dirname, "./db/db.json"), "utf8")
         .then(function (data) {
             notesList = JSON.parse(data);
             if (newNote.id || newNote.id===0) {   // update the existing data
@@ -47,7 +47,7 @@ app.post("/api/notes", function (req, res) {
             } else {  // add the new data
                 notesList.push(newNote);
             }
-            writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
+            writefileAsync(path.join(__dirname, "./db/db.json"), JSON.stringify(notesList))
                 .then(function () {
                     console.log("new note was writed to db.json");
                 })
@@ -57,11 +57,11 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
     var id = req.params.id;
-    readFileAsync(path.join(__dirname, "../../../db/db.json"), "utf8")
+    readFileAsync(path.join(__dirname, "./db/db.json"), "utf8")
         .then(function (data) {
             notesList = JSON.parse(data);
             notesList.splice(id, 1);
-            writefileAsync(path.join(__dirname, "../../../db/db.json"), JSON.stringify(notesList))
+            writefileAsync(path.join(__dirname, "./db/db.json"), JSON.stringify(notesList))
                 .then(function () {
                     console.log("note was deleted from db.json");
                 })
